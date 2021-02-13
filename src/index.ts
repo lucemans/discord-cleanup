@@ -50,17 +50,24 @@ async function handleMessages(channel: TextChannel, before: Snowflake = null) {
         const message = messages.get(snowflake);
         last = snowflake;
         let shouldDelete = false;
+        
+        // If message contains media, DONT delete it.
         if (message.attachments.size > 0) {
             continue;
         }
-        if (message.cleanContent.includes('== Results')) {
-            continue;
-        }
+        
+        // If message contains specified keyword, DONT delete it.
+        // if (message.cleanContent.includes('== Results')) {
+            // continue;
+        // }
+
+        // If message contains JUST an EMOJI, delete it.
         // if (message.cleanContent.match(/^\<.*?\:.*?\>$/g) != null) {
         //     console.log(log.info + gray('Found Emoji'));
         //     shouldDelete = true;
         // }
-        // shouldDelete = true;
+
+        // Otherwise
         // Ask user what to do with message
         console.log(log.msg + "(" + message.author.username + ") > \"" + message.cleanContent + "\"")
         shouldDelete = shouldDelete || ((await askQuestion(log.ask + 'Delete? (Y/n)', (reply) => (reply && reply.length > 0 && (['Y', 'y', 'n', 'N'].includes(reply))))).toLowerCase() == 'y');
